@@ -35,7 +35,7 @@ import os.path
 import glob
 import re
 import platform
-# This is a standard module in the ISR scheme, may not be elsewhere, so yum install option is provided
+# This may not be a standard module in you enterprise, so a yum install option is provided
 try:
     import numpy as np
 except:
@@ -95,6 +95,7 @@ except:
             except:
                 pass
 # The only required non-standard module for parsing xmls in the organizational environment, enable if org users are stored in xml 
+# and if you desire to use the inspect_accounts function detailed later
 #try:
 #    from lxml import etree
 #except:
@@ -330,6 +331,7 @@ def hwinfo():
     k = "Asset Tag:"
     worthless = "Not Specified"
     try:
+    # some organizations dump dmidecode data into a file like /etc/dmidump on a regular basis
         with open('/etc/dmidump', encoding="utf-8") as file:
             hwinfo1 = file.read()
             file.close()
@@ -651,6 +653,7 @@ def service_accounts():
 
 
 # Define the sudoers privileges on the host
+# Note that some organizations may use multiple sudoers files so we need to consider more than just /etc/sudoers
 def sudoers():
     try:
         sudoers_flist = []
@@ -690,7 +693,7 @@ def sudoers():
 
 
 # Define the age of the root password and compare its last-change-date to the frequency it is supposed to be changed
-# (every 180 days per NIST policy). 179 days is used here to ensure we have leeway to not violate the policy.
+# (every 180 days per NIST policy). 179 days is used here to ensure we have leeway to fix accounts and not violate the policy.
 def root_change():
     root_test = subprocess.call(["chage", "-l", "root"])
     if root_test == 0:
