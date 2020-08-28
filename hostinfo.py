@@ -38,7 +38,7 @@ import platform
 # This may not be a standard module in you enterprise, so a yum install option is provided
 try:
     import numpy as np
-except:
+except ImportError:
     try:
         subprocess.call(["yum", "install", "-y", "python36-numpy"])
         import numpy as np
@@ -51,7 +51,7 @@ except:
 # Try installing pip, in case of issues later
 try:
     import pip
-except:
+except ImportError:
     try:
         subprocess.call(["yum", "install", "-y", "rh-python36-python-pip"])
         import pip
@@ -64,7 +64,7 @@ except:
 # Encouraged but not required non-standard modules
 try:
     import netifaces
-except:
+except ImportError:
     try:
         subprocess.call(["yum", "install", "-y", "python36-netifaces"])
         import netifaces
@@ -80,7 +80,7 @@ except:
                 pass
 try:
     import psutil
-except:
+except ImportError:
     try:
         subprocess.call(["yum", "install", "-y", "python36-psutil"])
         import psutil
@@ -98,7 +98,7 @@ except:
 # and if you desire to use the inspect_accounts function detailed later
 #try:
 #    from lxml import etree
-#except:
+#except ImportError:
 #    try:
 #        subprocess.call(["yum", "install", "-y", "python36-lxml"])
 #        from lxml import etree
@@ -305,7 +305,7 @@ def macaddr():
         macaddr = re.sub(r"\s+", ", ", macaddr)
         macaddr = macaddr.strip()[:-1]
         macaddr = "'" + macaddr + "'"
-# Including the possibility of a RedHat 6 host rwhich has different ifconfig formatting
+# Including the possibility of a RedHat 6 host which has different ifconfig formatting
         if macaddr == "''":
             rhel6_mac_cmd = "ifconfig | grep HWaddr | awk '{print $5}'"
             macaddr = subprocess.Popen([rhel6_mac_cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8", universal_newlines=True, shell=True).communicate()[0]
