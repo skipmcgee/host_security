@@ -1,0 +1,26 @@
+---
+- hosts: {hostlist}
+  remote_user: {user}
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  connection: ssh
+  tasks:
+
+   - name: Copy file with owner and permission, using symbolic representation
+     copy:
+       src: {~/hostinfo.py}
+       dest: {/etc/hostinfo.py}
+       owner: root
+       group: root
+       mode: u=r,g=r,o=x
+
+   - name: Run cron job every sunday at 0205
+     cron:
+       name: hostinfo script cron job creation
+       user: root
+       hour: 2
+       minute: 5
+       day: 7
+       job: "/bin/python3 {/etc/hostinfo.py}"
+       state: present
