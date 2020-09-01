@@ -35,7 +35,7 @@ import os.path
 import glob
 import re
 import platform
-# This may not be a standard module in you enterprise, so a yum install option is provided
+# This may not be a standard module in your enterprise, so a yum install option is provided
 try:
     import numpy as np
 except ImportError:
