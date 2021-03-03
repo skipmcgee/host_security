@@ -4,6 +4,8 @@
 #
 # Completed (v1.0) 04/2020 by Skip McGee
 #
+# Run with python/3.6.0+
+#
 # Script to pull security-relevant Red Hat host information to build and
 # maintain a current asset inventory of all hosts. Send the identified
 # host details via syslog into Splunk. This script requires that appropriate
@@ -13,7 +15,7 @@
 # and that an appropriate query/report/dashboard is implemented in Splunk
 # (or the network-appropriate syslog ingestion platform).
 #
-# This script should be run weekly on all Red Hat hosts across the enterprise.
+# This script should be run weekly on all RedHat hosts across the enterprise.
 # The data sent via this script on a randomly selected server was 184k,
 # projected data usage on a network of 500 hosts would be  0.0109GB per week.
 # On a network of ~100 hosts it will require storage support of ~0.34008GB
