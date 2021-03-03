@@ -8,7 +8,7 @@
 # maintain a current asset inventory of all hosts. Send the identified
 # host details via syslog into Splunk. This script requires that appropriate
 # syslog forwarding is configured on the host, and if using rsyslog,
-# that the following entries are in /etc/rsyslog.conf:
+# that the following entries are in /etc/rsyslog.conf or appropriate drop-in:
 # $ModLoad imuxsock;$MaxMessageSize 500k;$PreserveFQDN on
 # and that an appropriate query/report/dashboard is implemented in Splunk
 # (or the network-appropriate syslog ingestion platform).
