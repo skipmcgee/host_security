@@ -765,7 +765,7 @@ def main():
         logs()
         os.remove('/etc/temp.txt')
     except:
-        sys.stderr.write("Issues running the hostinfo.py logging script on %s, need to investigate why \n",)
+        sys.stderr.write("Issues running the hostinfo.py logging script on %s, need to investigate why \n", hostname())
         class SyslogFormatter(logging.Formatter):
             def format(self, record):
                 result = super().format(record)
