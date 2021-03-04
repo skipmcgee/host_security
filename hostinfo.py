@@ -4,7 +4,7 @@
 #
 # Completed (v1.0) 04/2020 by Skip McGee
 #
-# Run with python/3.6.0+
+# Run with python/3.6.0-python/3.6.6
 #
 # Script to pull security-relevant Red Hat host information to build and
 # maintain a current asset inventory of all hosts. Send the identified
@@ -704,7 +704,8 @@ def root_change():
         regex = r"(\w{3})+\s+([0-9]{2})+\,+\s+([0-9]{4})|$"
         root_change = re.search(regex, root_change)
         root_change = root_change.group(0)
-        root_change = datetime.strptime(root_change, "%b %d, %Y")
+        root_change = root_change[:-2]
+        root_change = datetime.strptime(root_change, "%b %d, %y")
         today = datetime.now()
         if (root_change + timedelta(days = 179)) <= today:
             root_change = "CHANGE_ROOT_PASSWORD, last_root_changed='{root_change}'".format(root_change=root_change)
@@ -767,7 +768,7 @@ def main():
         logs()
         os.remove('/etc/temp.txt')
     except:
-        sys.stderr.write("Issues running the hostinfo.py logging script on %s, need to investigate why \n", hostname())
+        sys.stderr.write("Issues running the hostinfo.py logging script, need to investigate why")
         class SyslogFormatter(logging.Formatter):
             def format(self, record):
                 result = super().format(record)
