@@ -5,4 +5,4 @@ Identifies security-relevant data and sends it to your SIEM or syslog collector 
 ### The ansible (playbook ansible-playbook-hostinfo.yml):
 Requires validating the directory paths and users you want to execute the playbook (may require adjustment for your environment). Items that need to be tweaked for your environment are identified with "{}". 
 #####
-Requires at least python 3.2.0 on either RHEL 6 or RHEL 7.
+Requires python/3.2+ on either RHEL 6 or RHEL 7; due to use of platform.dist module, cannot be run with python/3.7+
