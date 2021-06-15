@@ -37,83 +37,56 @@ import os.path
 import glob
 import re
 import platform
+
 # This may not be a standard module in your enterprise, so a yum install option is provided
 try:
     import numpy as np
-except ImportError:
+except:
     try:
         subprocess.call(["yum", "install", "-y", "python36-numpy"])
         import numpy as np
     except:
-        try:
-            subprocess.call(["yum", "install", "-y", "numpy"])
-            import numpy as np
-        except:
+            print("**ERROR INSTALLING NUMPY**")
             pass
 # Try installing pip, in case of issues later
 try:
-    import pip
-except ImportError:
-    try:
-        subprocess.call(["yum", "install", "-y", "rh-python36-python-pip"])
-        import pip
-    except:
-        try:
-            subprocess.call(["yum", "install", "-y", "python-pip"])
-            import pip
-        except:
-            pass
+    subprocess.call(["yum", "install", "-y", "rh-python36-python-pip"])
+except:
+    print("**ERROR INSTALLING PIP**")
+    pass
 # Encouraged but not required non-standard modules
 try:
     import netifaces
-except ImportError:
+except:
     try:
         subprocess.call(["yum", "install", "-y", "python36-netifaces"])
         import netifaces
     except:
-        subprocess.call(["yum", "install", "-y", "python-netifaces"])
-        try:
-            import netifaces
-        except:
-            try:
-                subprocess.call(["pip", "install", "netifaces"])
-                import netifaces
-            except:
-                pass
+        print("**ERROR INSTALLING NETIFACES**")
+        pass
 try:
     import psutil
-except ImportError:
+except:
     try:
         subprocess.call(["yum", "install", "-y", "python36-psutil"])
         import psutil
     except:
-        subprocess.call(["yum", "install", "-y", "python-psutil"])
+        print("**ERROR INSTALLING PSUTIL**")
+        pass
+# The only required non-standard module for parsing ledger xmls in the ISR environment
+try:
+    from lxml import etree
+except:
+    try:
+        subprocess.call(["yum", "install", "-y", "python36-lxml"])
+        from lxml import etree
+    except:
         try:
-            import psutil
+            subprocess.call(["pip", "install", "lxml"])
+            from lxml import etree
         except:
-            try:
-               subprocess.call(["pip", "install", "psutil"])
-               import psutil
-            except:
-                pass
-# The only required non-standard module for parsing xmls in the organizational environment, enable if org users are stored in xml 
-# and if you desire to use the inspect_accounts function detailed later
-#try:
-#    from lxml import etree
-#except ImportError:
-#    try:
-#        subprocess.call(["yum", "install", "-y", "python36-lxml"])
-#        from lxml import etree
-#    except:
-#        subprocess.call(["yum", "install", "-y", "python-lxml"])
-#        try:
-#            from lxml import etree
-#        except:
-#            try:
-#                subprocess.call(["pip", "install", "lxml"])
-#                from lxml import etree
-#            except:
-#                pass
+            print("**ERROR INSTALLING LXML**")
+            pass
 
 
 # Define today's date to use to identify the running of this script
