@@ -43,50 +43,40 @@ try:
     import numpy as np
 except:
     try:
-        subprocess.call(["yum", "install", "-y", "python36-numpy"])
+        subprocess.call(["python3", "-m", "pip", "install", "numpy"])
         import numpy as np
     except:
-            print("**ERROR INSTALLING NUMPY**")
-            pass
-# Try installing pip, in case of issues later
-try:
-    subprocess.call(["yum", "install", "-y", "rh-python36-python-pip"])
-except:
-    print("**ERROR INSTALLING PIP**")
-    pass
-# Encouraged but not required non-standard modules
+        print("**ERROR INSTALLING NUMPY**")
+        exit(1)
+# First encouraged but not required non-standard package
 try:
     import netifaces
 except:
     try:
-        subprocess.call(["yum", "install", "-y", "python36-netifaces"])
+        subprocess.call(["python3", "-m", "pip", "install", "netifaces"])
         import netifaces
     except:
         print("**ERROR INSTALLING NETIFACES**")
         pass
+## Second encouraged but not required non-standard package
 try:
     import psutil
 except:
     try:
-        subprocess.call(["yum", "install", "-y", "python36-psutil"])
+        subprocess.call(["python3", "-m", "pip", "install", "psutil"])
         import psutil
-    except:
+    except:    
         print("**ERROR INSTALLING PSUTIL**")
         pass
-# The only required non-standard module for parsing ledger xmls in the ISR environment
+# Required non-standard module for parsing xmls
 try:
     from lxml import etree
 except:
     try:
-        subprocess.call(["yum", "install", "-y", "python36-lxml"])
+        subprocess.call(["python3", "-m", "pip", "install", "lxml"])
         from lxml import etree
     except:
-        try:
-            subprocess.call(["pip", "install", "lxml"])
-            from lxml import etree
-        except:
-            print("**ERROR INSTALLING LXML**")
-            pass
+        print("**ERROR INSTALLING LXML**")
 
 
 # Define today's date to use to identify the running of this script
@@ -111,11 +101,11 @@ def hostname():
     hostname = platform.node()
     return hostname
 
-
-# Define the Host's currently installed applications w/ version numbers and repos
+# Define the Host's currently installed applications and packages w/ version numbers and repos
 def apps():
     apps_test = subprocess.call(["yum", "list", "installed"])
     if apps_test == 0:
+        global apps, apps2
         apps = subprocess.check_output(["yum", "list", "installed"]).decode("utf-8")
         apps = re.sub(r"\n+", ";", apps)
         apps = re.sub(r"\s+", "", apps)
@@ -125,32 +115,17 @@ def apps():
         apps = apps.split(';')[4:]
         apps = ";".join(apps)
         apps = apps.replace(" ; ", " ")
+        apps2 = apps[:]
         apps = apps[:len(apps) // 2]
         apps = apps[1:]
         apps = 'Installed_Packages1=' + "'" + apps + "'"
-    else:
-        apps = "Error with 'yum list installed' command"
-    return apps
-# Define 2nd half of package list in case the max message size is exceeded
-def apps2():
-    apps_test = subprocess.call(["yum", "list", "installed"])
-    if apps_test == 0:
-        apps = subprocess.check_output(["yum", "list", "installed"]).decode("utf-8")
-        apps = re.sub(r"\n+", ";", apps)
-        apps = re.sub(r"\s+", "", apps)
-        apps = re.sub(r"\t+", "", apps)
-        apps = apps.replace(";", "; ")
-        apps = re.sub(r"(@.*?;)", ";", apps, flags=re.MULTILINE)
-        apps = apps.split(';')[4:]
-        apps = ";".join(apps)
-        apps = apps.replace(" ; ", " ")
-        apps2 = apps[len(apps) // 2:]
+        apps2 = apps2[len(apps2) // 2:]
         apps2 = apps2[:-2]
         apps2 = 'Installed_Packages2=' + "'" + apps2 + "'"
-    else:
-        apps2 = "Error with 'yum list installed' command"
-    return apps2
 
+    else:
+        apps, apps2 = "Error with 'yum list installed' command"
+    return apps, apps2
 
 # Define the Host time in UTC, ntp sync status, etc.
 def time():
@@ -692,9 +667,10 @@ def root_change():
 # Build log entries and sends them to syslog
 def logs():
 # Define Messages
-    date_msg = "HostInfo_LastSent='{date}'; OS={osinfo}".format(date=date, osinfo=osinfo())
-    apps_msg = "{apps}".format(apps=apps())
-    apps_msg2 = "{apps2}".format(apps2=apps2())
+    date_msg = "ISRHostInfo_LastSent='{date}'; OS={osinfo}".format(date=date, osinfo=osinfo())
+    apps()
+    apps_msg = "{apps}".format(apps=apps)
+    apps_msg2 = "{apps2}".format(apps2=apps2)
     intf_msg = "Interface_Names={interfaces}; Primary_IP='{ipaddrpri}'; MAC_Address(es)={macaddr}".format(interfaces=interfaces(), ipaddrpri=ipaddrpri(), macaddr=macaddr())
     addr_msg = "All_Interface_Address_Info=[{ifaddrall}]".format(ifaddrall=ifaddrall())
     hw_msg = "{hwinfo}".format(hwinfo=hwinfo())
